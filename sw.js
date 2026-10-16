@@ -1,6 +1,6 @@
 /* SYNE S-16 service worker: the page works offline once it has been opened.
    Pages: network first (so a new version arrives), the cached copy when offline. Files and fonts: cache first. */
-const CACHE = 'syne-s16-7c6b1b1024';
+const CACHE = 'syne-s16-7c6b1b1025';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'favicon-32.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));

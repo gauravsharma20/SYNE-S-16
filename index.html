@@ -666,6 +666,26 @@ html:not(.kbd) :is(.sy-knob__body, .sy-dial__body, .sy-sel__body, .sy-pad, .sy-p
 @media (max-width: 359px) { .scale { font-size: 7.5px; letter-spacing: .03em; padding: 0 3px; } }
 .sh__val { font: 500 13px/17px var(--font-mono); color: var(--ink); }
 
+
+/* ===== light finish: realistic edges (as in SYNE MOTH). The design system's seam is a near-black 1.5px ring that reads as
+   a drawn outline on light plastic; real light keys show a faint edge, a lit top lip and a soft cast shadow instead.
+   Keyed off .is-light, set from the panel colour actually on screen, so it holds however the light finish is reached. ===== */
+:root.is-light .sy-pad:not(.is-lit):not(.is-play) { box-shadow: 0 0 0 1px rgba(20,20,18,.15), inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 4px rgba(20,20,18,.07), 0 1px 1px rgba(20,20,18,.10), 0 3px 6px -1px rgba(20,20,18,.12); }
+:root.is-light .sy-pad.is-lit:not(.is-play) { box-shadow: 0 0 0 1px color-mix(in oklab, var(--pc), black 22%), inset 0 1px 0 rgba(255,255,255,.35), inset 0 -2px 4px rgba(20,20,18,.12), 0 2px 4px rgba(20,20,18,.14); }
+:root.is-light .sy-pad.is-play { box-shadow: 0 0 0 1px rgba(20,20,18,.18), 0 0 0 3px var(--led-white), inset 0 -2px 4px rgba(20,20,18,.08), 0 0 8px color-mix(in oklab, var(--led-white) 35%, transparent); }
+:root.is-light .sy-key { box-shadow: 0 0 0 1px rgba(20,20,18,.14), inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 3px rgba(20,20,18,.06), 0 1px 1px rgba(20,20,18,.10), 0 3px 6px -1px rgba(20,20,18,.12); }
+:root.is-light .sy-key.is-down { box-shadow: 0 0 0 1px rgba(20,20,18,.16), inset 0 2px 4px rgba(20,20,18,.13); }
+:root.is-light .ukey:not(.ukey--ink) { box-shadow: 0 0 0 1px rgba(20,20,18,.14), inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 2px rgba(20,20,18,.06), 0 1px 2px rgba(20,20,18,.12); }
+:root.is-light .ukey:not(.ukey--ink):active, :root.is-light .ukey:not(.ukey--ink).is-on { box-shadow: 0 0 0 1px rgba(20,20,18,.16), inset 0 2px 4px rgba(20,20,18,.12); }
+:root.is-light .ukey--ink { box-shadow: 0 0 0 1px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.12), 0 2px 3px rgba(20,20,18,.22); }
+:root.is-light .sy-seg--keys .sy-seg__item { box-shadow: 0 0 0 1px rgba(20,20,18,.14), inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 3px rgba(20,20,18,.06), 0 2px 3px rgba(20,20,18,.10); }
+:root.is-light .sy-seg--keys .sy-seg__item.is-active { box-shadow: 0 0 0 1px rgba(20,20,18,.16), inset 0 2px 5px rgba(20,20,18,.14); }
+:root.is-light .sy-push__cap { box-shadow: 0 0 0 1px color-mix(in oklab, var(--c), black 25%), 0 2px 3px rgba(20,20,18,.22), inset 0 -3px 5px color-mix(in oklab, var(--c), black 18%); }
+:root.is-light .sy-push--ivory .sy-push__cap { box-shadow: 0 0 0 1px rgba(20,20,18,.15), 0 2px 3px rgba(20,20,18,.18), inset 0 -3px 5px rgba(20,20,18,.08); }
+:root.is-light .sy-push.is-down .sy-push__cap { box-shadow: 0 0 0 1px color-mix(in oklab, var(--c), black 28%), inset 0 2px 4px rgba(0,0,0,.22); }
+:root.is-light .fkey { box-shadow: 0 0 0 1px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.14), 0 3px 0 0 color-mix(in oklab, var(--knob-black), black 40%), 0 4px 6px rgba(20,20,18,.22); }
+:root.is-light .fkey.is-down { box-shadow: 0 0 0 1px rgba(0,0,0,.6), inset 0 2px 6px rgba(0,0,0,.6), 0 1px 0 0 color-mix(in oklab, var(--knob-black), black 40%), 0 1px 2px rgba(20,20,18,.2); }
+:root.is-light .lcd { box-shadow: var(--shadow-well), 0 0 0 1px rgba(20,20,18,.28), 0 0 0 7px var(--chassis-raised), 0 0 0 8px var(--shade), 0 10px 18px -10px var(--shade); }
 </style>
 <div id="app"></div>
 <input type="file" id="s16-audio" class="vh" tabindex="-1" aria-hidden="true" accept="audio/*,video/*">
@@ -4297,6 +4317,18 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 <script>
 /* offline + installable: a service worker caches the page once it has been opened */
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) { addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
+</script>
+<script>
+/* light finish: mark .is-light from the panel colour on screen (Options finish, the phone's appearance, or a host forcing a theme) */
+(function () {
+  function markLight() {
+    var c = getComputedStyle(document.documentElement).getPropertyValue('--chassis').trim(), m = c.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i), l = 1;
+    if (m) l = (0.2126 * parseInt(m[1], 16) + 0.7152 * parseInt(m[2], 16) + 0.0722 * parseInt(m[3], 16)) / 255;
+    document.documentElement.classList.toggle('is-light', l > 0.5);
+  }
+  markLight(); document.addEventListener('DOMContentLoaded', markLight); window.addEventListener('load', markLight);
+  try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', markLight); new MutationObserver(markLight).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-finish', 'style'] }); } catch (e) {}
+})();
 </script>
 </body>
 </html>
